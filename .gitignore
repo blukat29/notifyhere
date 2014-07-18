@@ -1,8 +1,12 @@
 
+**/*.swp
 **/*.pyc
 
 notifyhere/notifyhere/secrets.py
 **/secrets.py
 
 venv/*
+
+django.ini
+uwsgi_params
 
