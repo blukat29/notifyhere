@@ -7,6 +7,9 @@ notifyhere/notifyhere/secrets.py
 
 venv/*
 
+**/*.sqlite
+**/*.sqlite3
+
 django.ini
 uwsgi_params
 
