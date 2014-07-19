@@ -1,0 +1,7 @@
+{% if result %}
+  {% for key,val in result %}
+    <p>{{ key }} : {{ val }}</p>
+  {% endfor %}
+{% else %}
+  <p>No result.</p>
+{% endif %}

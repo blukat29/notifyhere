@@ -21,3 +21,11 @@ def auth(request, service=None):
             request.session['slack_token'] = tok
 
     return redirect('/dash')
+
+def ajax(request, service=None):
+
+    if service == 'slack':
+        tok = request.session.get('slack_token')
+        noti = api.slack.notifications(tok)
+        result = [(name, str(noti[name])) for name in sorted(noti, key=noti.get)]
+        return render(request, 'dash/noti.html', {'result':result})
