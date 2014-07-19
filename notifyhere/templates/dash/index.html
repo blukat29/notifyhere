@@ -1,1 +1,16 @@
-<h2>Hello!</h2>
+<!DOCTYPE HTML>
+<html>
+<head>
+
+</head>
+<body>
+
+  <h2>Hello!</h2>
+
+  <form action="" method="post">{% csrf_token %}
+    <input type="hidden" name="service" value="slack"/>
+    <input type="submit">
+  </form>
+
+</body>
+</html>
