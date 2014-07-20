@@ -7,10 +7,19 @@
 
   <h2>Hello!</h2>
 
-  <form action="" method="post">{% csrf_token %}
-    <input type="hidden" name="service" value="slack"/>
-    <input type="submit">
-  </form>
+  {% for key, val in services %}
+    <h3>{{ key }}</h3>
+
+    {% if val == True %}
+      <a href="/dash/ajax/{{ key }}">noti</a>
+    {% else %}
+      <form action="" method="post">{% csrf_token %}
+        <input type="hidden" name="service" value="{{ key }}"/>
+        <input type="submit">
+      </form>
+    {% endif %}
+
+  {% endfor %}
 
 </body>
 </html>

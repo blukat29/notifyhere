@@ -33,7 +33,7 @@ def access_token(code):
         'client_id' : secrets.SLACK_CLIENT_ID,
         'client_secret' : secrets.SLACK_CLIENT_SECRET,
         'code' : code,
-        'redirect_uri' : quote(BASE_REDIRECT_URL + "slack"),
+        'redirect_uri' : quote(secrets.BASE_REDIRECT_URL + "slack"),
     }
     result = slack_api_call(conn, "oauth.access", args)
 
@@ -59,6 +59,8 @@ def notifications(token):
             }
             info = slack_api_call(conn, "channels.info", args)
 
-            result[channel['name']] = info['channel']['unread_count']
+            name = '#' + channel['name']
+            unread_count = info['channel']['unread_count']
+            result[name] = unread_count
 
     return result

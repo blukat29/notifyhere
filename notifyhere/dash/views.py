@@ -8,10 +8,15 @@ def index(request):
     if request.method == 'POST':
         if request.POST['service'] == 'slack':
             return redirect(api.slack.auth_url())
+        return HttpResponse("Login to " + request.POST['service'] + " not ready.")
 
     if request.method == 'GET':
         tok = request.session.get('slack_token')
-        return render(request, 'dash/index.html', {})
+        if tok:
+            args = [('slack',True), ('github',False)]
+        else:
+            args = [('slack',False), ('github',False)]
+        return render(request, 'dash/index.html', {'services':args})
 
 def auth(request, service=None):
 
@@ -27,5 +32,7 @@ def ajax(request, service=None):
     if service == 'slack':
         tok = request.session.get('slack_token')
         noti = api.slack.notifications(tok)
-        result = [(name, str(noti[name])) for name in sorted(noti, key=noti.get)]
+        result = [(name, str(noti[name])) for name in sorted(noti, key=noti.get, reverse=True)]
         return render(request, 'dash/noti.html', {'result':result})
+
+    return render(request, 'dash/noti.html', {'result':None})
