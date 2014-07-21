@@ -1,7 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-
+{% load staticfiles %}
+<script src="{% static 'common/js/jquery-2.1.0.min.js' %}"></script>
+<script src="{% static 'dash/noti_ajax.js' %}"></script>
 </head>
 <body>
 
@@ -11,7 +13,8 @@
     <h3>{{ key }}</h3>
 
     {% if val == True %}
-      <a href="/dash/ajax/{{ key }}">noti</a>
+      <div id="noti_{{ key }}">Click load</div>
+      <input type="button" value="Load" onclick="loadNoti('{{ key }}')"/>
     {% else %}
       <form action="" method="post">{% csrf_token %}
         <input type="hidden" name="service" value="{{ key }}"/>
