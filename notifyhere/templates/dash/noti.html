@@ -1,9 +1,9 @@
 {% if result %}
-  <ul class="noti">
+  <div class="row-fluid">
   {% for key,val in result %}
-    <li>{{ key }} {{ val }}</li>
+    <div class="span6">{{ key }} {{ val }}</div>
   {% endfor %}
-  </ul>
+  </div>
 {% else %}
   <p>No result.</p>
 {% endif %}

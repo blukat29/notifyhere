@@ -4,25 +4,43 @@
 {% load staticfiles %}
 <script src="{% static 'common/js/jquery-2.1.0.min.js' %}"></script>
 <script src="{% static 'dash/noti_ajax.js' %}"></script>
+<link href="{% static 'common/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'common/css/bootstrap-responsive.min.css' %}" rel="stylesheet">
+<style type="text/css">
+  ul {
+    column: 2;
+    -webkit-column: 2;
+    -moz-column: 2;
+  }
+  .service {
+    background-color: #b0c4de;
+    margin: 10px;
+    border-style: solid;
+    border-width: 2px;
+  }
+</style>
 </head>
 <body>
 
   <h2>Hello!</h2>
-
+  <div class="container-fluid">
+  <div class="column-fluid">
   {% for key, val in services %}
+    <div class="span4 service">
     <h3>{{ key }}</h3>
 
     {% if val == True %}
       <div id="noti_{{ key }}">Click load</div>
-      <input type="button" value="Load" onclick="loadNoti('{{ key }}')"/>
+      <button type="button" class="btn btn-default" onclick="loadNoti('{{ key }}')">Load</button>
     {% else %}
       <form action="" method="post">{% csrf_token %}
         <input type="hidden" name="service" value="{{ key }}"/>
-        <input type="submit">
+        <button type="submit" class="btn btn-primary">Login</button>
       </form>
     {% endif %}
-
+    </div>
   {% endfor %}
-
+  </div>
+  </div>
 </body>
 </html>
