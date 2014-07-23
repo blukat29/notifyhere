@@ -27,7 +27,7 @@
   <div class="column-fluid">
   {% for service in services %}
     <div class="span4 service">
-    <h3>{{ key }}</h3>
+    <h3>{{ service.name }}</h3>
 
     {% if service.is_auth %}
       <div id="noti_{{ service.name }}">Click load</div>

@@ -18,7 +18,7 @@ def index(request):
             return HttpResponse("Login to " + request.POST['service'] + " not ready.")
 
     if request.method == 'GET':
-        services = ['slack']
+        services = ['slack','github']
         args = []
         for service in services:
             agent = getApi(service)
