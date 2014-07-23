@@ -9,35 +9,41 @@ def index(request):
 
     if request.method == 'POST':
         try:
-            link = getApi(request.POST['service']).oauth_link()
+            service = request.POST['service']
+            agent = getApi(service)
+            link = agent.oauth_link()
+            request.session[service] = agent.pack()
             return redirect(link)
         except ValueError:
             return HttpResponse("Login to " + request.POST['service'] + " not ready.")
 
     if request.method == 'GET':
-        services = ['slack','github']
+        services = ['slack']
         args = []
         for service in services:
-            tok = request.session.get(service + '_token')
-            if tok:
-                args.append((service, True))
-            else:
-                args.append((service, False))
+            agent = getApi(service)
+            agent.unpack(request.session.get(service))
+            args.append(agent)
         return render(request, 'dash/index.html', {'services':args})
 
 def auth(request, service=None):
 
     if 'code' in request.GET:
-        tok = getApi(service).access_token(request.GET['code'])
-        request.session[service+'_token'] = tok
+        agent = getApi(service)
+        agent.unpack(request.session[service])
+        agent.oauth_callback(request.GET)
+        request.session[service] = agent.pack()
+    else:
+        return HttpResponse("ouch!")
 
     return redirect('/dash')
 
 def ajax(request, service=None):
 
     try:
-        tok = request.session.get(service+'_token')
-        noti = getApi(service).notifications(tok)
+        agent = getApi(service)
+        agent.unpack(request.session[service])
+        noti = agent.update()
         result = [(name, str(noti[name])) for name in sorted(noti, key=noti.get, reverse=True)]
         return render(request, 'dash/noti.html', {'result':result})
     except ValueError:

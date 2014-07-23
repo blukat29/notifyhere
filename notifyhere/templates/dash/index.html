@@ -25,16 +25,16 @@
   <h2>Hello!</h2>
   <div class="container-fluid">
   <div class="column-fluid">
-  {% for key, val in services %}
+  {% for service in services %}
     <div class="span4 service">
     <h3>{{ key }}</h3>
 
-    {% if val == True %}
-      <div id="noti_{{ key }}">Click load</div>
-      <button type="button" class="btn btn-default" onclick="loadNoti('{{ key }}')">Load</button>
+    {% if service.is_auth %}
+      <div id="noti_{{ service.name }}">Click load</div>
+      <button type="button" class="btn btn-default" onclick="loadNoti('{{ service.name }}')">Load</button>
     {% else %}
       <form action="" method="post">{% csrf_token %}
-        <input type="hidden" name="service" value="{{ key }}"/>
+        <input type="hidden" name="service" value="{{ service.name }}"/>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
     {% endif %}
