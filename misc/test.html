@@ -1,0 +1,65 @@
+<!DOCYPE html>
+<html>
+<head>
+  <!---------- JAVASCRIPT ------------->
+<script src="../notifyhere/static/common/js/jquery-2.1.0.min.js"></script>
+<script>
+  function sleep(milisec) {
+    var start = new Date().getTime();
+    while ((new Date()).getTime() < start + milisec);
+  }
+
+  function loadSlack() {
+    var id = "#noti_slack";
+    $(id).html("Loading...");
+    sleep(1000);
+    $(id).html('<div class="row-fluid"> \
+  <div class="span6">#ctf 10</div> \
+  <div class="span6">#defcon 27</div> \
+  <div class="span6">#edu_pwnable 0</div> \
+  <div class="span6">#general 8</div> \
+  <div class="span6">#hacking 5</div> \
+  <div class="span6">#locodev 7</div> \
+  <div class="span6">#maple 42</div> \
+  <div class="span6">#mathematics 22</div> \
+  <div class="span6">#nb 0</div> \
+  <div class="span6">#random 99</div> \
+  <div class="span6">#yb 366</div> \
+</div>');
+  }
+</script>
+  <!-------------- CSS ----------------->
+<link href="../notifyhere/static/common/css/bootstrap.min.css" rel="stylesheet">
+<link href="../notifyhere/static/common/css/bootstrap-responsive.min.css" rel="stylesheet">
+<style type="text/css">  
+  .service {
+    background-color: #b0c4de;
+    margin: 10px;
+    border-style: solid;
+    border-width: 2px;
+  }
+</style>
+</head>
+<body>
+    <!----------- BODY ------------->
+
+  <h2>Hello!</h2>
+  <div class="container-fluid">
+  <div class="column-fluid">
+  
+    <div class="span4 service">
+      <h3>Slack</h3>
+      <div id="noti_slack">Click Load</div>
+      <button type="button" class="btn btn-default" onclick="loadSlack()">Load</button>
+    </div>
+  
+    <div class="span4 service">
+      <h3>Github</h3>
+      <button type="button" class="btn btn-primary">Login</button>
+    </div>
+    
+  </div>
+  </div>
+
+</body>
+</html>
