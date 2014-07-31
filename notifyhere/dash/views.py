@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-from api.tools import getApi
+from api.tools import getAllApis, getApi
 import api.slack
 import api.github
 
@@ -18,7 +18,7 @@ def index(request):
             return HttpResponse("Login to " + request.POST['service'] + " not ready.")
 
     if request.method == 'GET':
-        services = ['slack','github']
+        services = getAllApis()
         args = []
         for service in services:
             agent = getApi(service)

@@ -3,6 +3,9 @@ from urllib import quote
 from slack import SlackApi
 from github import GithubApi
 
+def getAllApis():
+    return ['slack','github']
+
 def encode_params(args):
     args = {k: quote(v) for k,v in args.iteritems()}
     args = [k + "=" + v for k,v in args.iteritems()]
