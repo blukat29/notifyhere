@@ -1,64 +1,93 @@
 <!DOCYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!---------- JAVASCRIPT ------------->
-<script src="../notifyhere/static/common/js/jquery-2.1.0.min.js"></script>
-<script>
-  function sleep(milisec) {
-    var start = new Date().getTime();
-    while ((new Date()).getTime() < start + milisec);
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+
+<style type="text/css">  
+  .row-header {
+    background-color: #eeeeee;
+  }
+  .col-header {
+    display:table-cell;
+    float:none;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  img {
+    padding: 4px;
+    height: 32px;
+    width: auto;
+  }
+  .col-table {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .glyphicon {
+    height: 100%;
+    width: auto;
+  }
+  h3, h4, h6 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+    padding-left: 10px;
+  }
+  .service {
+    margin: 10px;
   }
 
-  function loadSlack() {
-    var id = "#noti_slack";
-    $(id).html("Loading...");
-    sleep(1000);
-    $(id).html('<div class="row-fluid"> \
-  <div class="span6">#ctf 10</div> \
-  <div class="span6">#defcon 27</div> \
-  <div class="span6">#edu_pwnable 0</div> \
-  <div class="span6">#general 8</div> \
-  <div class="span6">#hacking 5</div> \
-  <div class="span6">#locodev 7</div> \
-  <div class="span6">#maple 42</div> \
-  <div class="span6">#mathematics 22</div> \
-  <div class="span6">#nb 0</div> \
-  <div class="span6">#random 99</div> \
-  <div class="span6">#yb 366</div> \
-</div>');
-  }
-</script>
-  <!-------------- CSS ----------------->
-<link href="../notifyhere/static/common/css/bootstrap.min.css" rel="stylesheet">
-<link href="../notifyhere/static/common/css/bootstrap-responsive.min.css" rel="stylesheet">
-<style type="text/css">  
-  .service {
-    background-color: #b0c4de;
-    margin: 10px;
-    border-style: solid;
-    border-width: 2px;
-  }
 </style>
+
 </head>
 <body>
-    <!----------- BODY ------------->
 
-  <h2>Hello!</h2>
-  <div class="container-fluid">
-  <div class="column-fluid">
+  <h2> Hello! </h2>
   
-    <div class="span4 service">
-      <h3>Slack</h3>
-      <div id="noti_slack">Click Load</div>
-      <button type="button" class="btn btn-default" onclick="loadSlack()">Load</button>
-    </div>
+  <div class="container">
   
-    <div class="span4 service">
-      <h3>Github</h3>
-      <button type="button" class="btn btn-primary">Login</button>
+    <div class="col-sm-4 service">
+
+      <div class="row row-header">
+        <div class="col-sm-1 col-header"><img src="http://slack.com/favicon.ico"></img></div>
+        <div class="col-sm-3 col-header"><h4>Slack</h4></div>
+        <div class="col-sm-6 col-header"><h6>blukat in KUS/GoN</h6></div>
+        <div class="col-sm-1 col-header"><span class="glyphicon glyphicon-refresh" onclick="alert('a');"></span></div>
+        <div class="col-sm-1 col-header"><span class="glyphicon glyphicon-remove"></span></div>    
+      </div>
+      <div class="row row-table">
+        <div class="col-sm-3 col-table">#mathematics</div>
+        <div class="col-sm-3 col-table">100</div>
+        <div class="col-sm-3 col-table">#yb</div>
+        <div class="col-sm-3 col-table">200</div>
+        <div class="col-sm-3 col-table">#maple</div>
+        <div class="col-sm-3 col-table">64</div>
+        <div class="col-sm-3 col-table">secuinside</div>
+        <div class="col-sm-3 col-table">22</div>
+      </div>
+
     </div>
+
+    <div class="col-sm-4 service">
     
-  </div>
+      <div class="row row-header">
+        <div class="col-sm-1 col-header"><img src="http://github.com/favicon.ico"></img></div>
+        <div class="col-sm-3 col-header"><h4>Github</h4></div>
+        <div class="col-sm-6 col-header"><h6>blukat29</h6></div>
+        <div class="col-sm-1 col-header"><span class="glyphicon glyphicon-refresh"></span></div>
+        <div class="col-sm-1 col-header"><span class="glyphicon glyphicon-remove"></span></div>    
+      </div>
+      <div class="row row-table">
+        <div class="col-sm-3 col-table">gmarik/Vundle.vim</div>
+        <div class="col-sm-3 col-table">1</div>
+        <div class="col-sm-3 col-table">django/django</div>
+        <div class="col-sm-3 col-table">20</div>
+      </div>
+
+    </div>
+
   </div>
 
 </body>
