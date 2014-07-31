@@ -1,0 +1,34 @@
+.row-header {
+  background-color: #eeeeee;
+}
+.col-header {
+  display:table-cell;
+  float:none;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+.col-table {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.glyphicon {
+  height: 100%;
+  width: auto;
+}
+img {
+  padding: 4px;
+  height: 32px;
+  width: auto;
+}
+h3, h4, h6 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.service {
+  margin: 10px;
+}
+

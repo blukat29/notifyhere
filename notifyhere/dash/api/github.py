@@ -14,6 +14,7 @@ class GithubApi(base.ApiBase):
         self.name = "github"
         self.state = ""
         self.token = ""
+        self.icon = "http://github.com/favicon.ico"
 
     def oauth_link(self):
         self.state = str(int(time.time()))
