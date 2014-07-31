@@ -24,15 +24,17 @@
             <span class="glyphicon glyphicon-refresh"></span>
           </button>
         </div>
-        <div class="col-sm-1 col-header"><span class="glyphicon glyphicon-remove"></span></div>
+        <div class="col-sm-1 col-header">
+          <a href="/dash/auth/logout/{{ service.name }}">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
         {% else %}
         <div class="col-sm-6 col-header"><h6>Not logged in.</h6></div>
         <div class="col-sm-1 col-header"></div>
         <div class="col-sm-1 col-header">
           <a href="/dash/auth/redirect/{{ service.name }}">
-            <button type=submit class="btn btn-link">
-              <span class="glyphicon glyphicon-ok"></span>
-            </button>
+            <span class="glyphicon glyphicon-ok"></span>
           </a>
         </div>
         {% endif %}

@@ -92,6 +92,10 @@ class SlackApi(base.ApiBase):
 
         return result
 
+    def logout(self):
+        self.is_auth = False
+        self.token = ""
+
     def pack(self):
         return {
             'is_auth':self.is_auth,

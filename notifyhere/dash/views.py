@@ -31,6 +31,10 @@ def auth_callback(request, service=None):
     return redirect('/dash')
 
 def auth_logout(request, service=None):
+    agent = getApi(service)
+    agent.unpack(request.session[service])
+    agent.logout()
+    request.session[service] = agent.pack()
     return redirect('/dash')
 
 def ajax(request, service=None):
