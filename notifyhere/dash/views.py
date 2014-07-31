@@ -6,28 +6,21 @@ import api.slack
 import api.github
 
 def index(request):
+    services = getAllApis()
+    args = []
+    for service in services:
+        agent = getApi(service)
+        agent.unpack(request.session.get(service))
+        args.append(agent)
+    return render(request, 'dash/index.html', {'services':args})
 
-    if request.method == 'POST':
-        try:
-            service = request.POST['service']
-            agent = getApi(service)
-            link = agent.oauth_link()
-            request.session[service] = agent.pack()
-            return redirect(link)
-        except ValueError:
-            return HttpResponse("Login to " + request.POST['service'] + " not ready.")
+def auth_redirect(request, service=None):
+    agent = getApi(service)
+    link = agent.oauth_link()
+    request.session[service] = agent.pack()
+    return redirect(link)
 
-    if request.method == 'GET':
-        services = getAllApis()
-        args = []
-        for service in services:
-            agent = getApi(service)
-            agent.unpack(request.session.get(service))
-            args.append(agent)
-        return render(request, 'dash/index.html', {'services':args})
-
-def auth(request, service=None):
-
+def auth_callback(request, service=None):
     if 'code' in request.GET:
         agent = getApi(service)
         agent.unpack(request.session[service])
@@ -35,11 +28,12 @@ def auth(request, service=None):
         request.session[service] = agent.pack()
     else:
         return HttpResponse("ouch!")
+    return redirect('/dash')
 
+def auth_logout(request, service=None):
     return redirect('/dash')
 
 def ajax(request, service=None):
-
     try:
         agent = getApi(service)
         agent.unpack(request.session[service])

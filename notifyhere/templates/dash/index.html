@@ -29,13 +29,11 @@
         <div class="col-sm-6 col-header"><h6>Not logged in.</h6></div>
         <div class="col-sm-1 col-header"></div>
         <div class="col-sm-1 col-header">
-          <form action="" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="service" value="{{ service.name }}"/>
+          <a href="/dash/auth/redirect/{{ service.name }}">
             <button type=submit class="btn btn-link">
               <span class="glyphicon glyphicon-ok"></span>
             </button>
-          </form>
+          </a>
         </div>
         {% endif %}
       </div>
