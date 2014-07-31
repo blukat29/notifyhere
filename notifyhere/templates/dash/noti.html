@@ -1,9 +1,8 @@
 {% if result %}
-  <div class="row-fluid">
   {% for key,val in result %}
-    <div class="span6">{{ key }} {{ val }}</div>
+  <div class="col-sm-3 col-table">{{ key }}</div>
+  <div class="col-sm-3 col-table">{{ val }}</div>
   {% endfor %}
-  </div>
 {% else %}
-  <p>No result.</p>
+<div class="col-sm-12 col-table">No result.</div>
 {% endif %}
