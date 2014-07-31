@@ -15,6 +15,7 @@ class SlackApi(base.ApiBase):
         self.state = ""
         self.token = ""
         self.icon = "https://slack.com/favicon.ico"
+        self.username = ""
 
     def oauth_link(self):
         self.state = str(int(time.time()))
@@ -66,6 +67,14 @@ class SlackApi(base.ApiBase):
 
         self.is_auth = True
         self.token = result['access_token']
+
+        args = {
+            'token':self.token,
+        }
+        result = SlackApi.slack_api_call(conn, "auth.test", args)
+        self.username = result['team'] + " " + result['user']
+
+        conn.close()
         return self.token
 
     def update(self):
@@ -102,6 +111,7 @@ class SlackApi(base.ApiBase):
             'name':self.name,
             'state':self.state,
             'token':self.token,
+            'username':self.username,
         }
 
     def unpack(self, data):
@@ -109,6 +119,7 @@ class SlackApi(base.ApiBase):
             self.is_auth = data.get('is_auth',False)
             self.state = data.get('state',"")
             self.token = data.get('token',"")
+            self.username = data.get('username',"")
 
     def __str__(self):
         return json.dumps(self.pack())
