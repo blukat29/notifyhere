@@ -1,11 +1,14 @@
 .row-header {
-  background-color: #eeeeee;
+  background-color: #dddddd;
 }
 .col-header {
   display:table-cell;
   float:none;
   padding-right: 0px;
   padding-left: 0px;
+}
+.row-table {
+  background-color: #eeeeee;
 }
 .col-table {
   padding-right: 0px;
