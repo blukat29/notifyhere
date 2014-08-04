@@ -8,14 +8,16 @@ import tools
 import secrets
 
 class SlackApi(base.ApiBase):
+    
+    FAVICON_URL = "https://slack.com/favicon.ico"
 
     def __init__(self):
-        self.is_auth = False
-        self.name = "slack"
+        base.ApiBase.__init__(self, "slack")
         self.state = ""
         self.token = ""
-        self.icon = "https://slack.com/favicon.ico"
-        self.username = ""
+
+    def icon_url(self):
+        return FAVICON_URL
 
     def oauth_link(self):
         self.state = str(int(time.time()))
@@ -104,22 +106,6 @@ class SlackApi(base.ApiBase):
     def logout(self):
         self.is_auth = False
         self.token = ""
-
-    def pack(self):
-        return {
-            'is_auth':self.is_auth,
-            'name':self.name,
-            'state':self.state,
-            'token':self.token,
-            'username':self.username,
-        }
-
-    def unpack(self, data):
-        if data:
-            self.is_auth = data.get('is_auth',False)
-            self.state = data.get('state',"")
-            self.token = data.get('token',"")
-            self.username = data.get('username',"")
 
     def __str__(self):
         return json.dumps(self.pack())
