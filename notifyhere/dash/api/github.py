@@ -17,7 +17,7 @@ class GithubApi(base.ApiBase):
         self.token = ""
 
     def icon_url(self):
-        return FAVICON_URL
+        return GithubApi.FAVICON_URL
 
     def oauth_link(self):
         self.state = str(int(time.time()))

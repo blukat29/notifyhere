@@ -17,7 +17,7 @@ class SlackApi(base.ApiBase):
         self.token = ""
 
     def icon_url(self):
-        return FAVICON_URL
+        return SlackApi.FAVICON_URL
 
     def oauth_link(self):
         self.state = str(int(time.time()))
