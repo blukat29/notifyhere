@@ -30,8 +30,7 @@ class SlackApi(base.ApiBase):
         }
         return url + "?" + tools.encode_params(args)
 
-    @staticmethod
-    def slack_api_call(conn, job, args):
+    def _api_call(self, conn, job, args):
         url = "/api/" + job + "?" + tools.encode_params(args)
         conn.request("GET", url, "", {})
         resp = conn.getresponse()
@@ -60,7 +59,7 @@ class SlackApi(base.ApiBase):
             'code':params['code'],
             'redirect_uri':secrets.BASE_REDIRECT_URL + "slack",
         }
-        result = SlackApi.slack_api_call(conn, "oauth.access", args)
+        result = self._api_call(conn, "oauth.access", args)
 
         if not result:
             return None
@@ -73,7 +72,7 @@ class SlackApi(base.ApiBase):
         args = {
             'token':self.token,
         }
-        result = SlackApi.slack_api_call(conn, "auth.test", args)
+        result = self._api_call(conn, "auth.test", args)
         self.username = result['team'] + " " + result['user']
 
         conn.close()
@@ -85,7 +84,7 @@ class SlackApi(base.ApiBase):
         args = {
             'token':self.token,
         }
-        channels = SlackApi.slack_api_call(conn, "channels.list", args)
+        channels = self._api_call(conn, "channels.list", args)
 
         result = {}
 
@@ -95,7 +94,7 @@ class SlackApi(base.ApiBase):
                     'token':self.token,
                     'channel':channel['id'],
                 }
-                info = SlackApi.slack_api_call(conn, "channels.info", args)
+                info = self._api_call(conn, "channels.info", args)
 
                 name = '#' + channel['name']
                 unread_count = info['channel']['unread_count']

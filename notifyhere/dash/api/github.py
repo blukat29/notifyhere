@@ -61,8 +61,7 @@ class GithubApi(base.ApiBase):
         except (KeyError, ValueError):
             return None
 
-    @staticmethod
-    def github_api_call(conn, job, args):
+    def _api_call(self, conn, job, args):
         url  = "/" + job + "?" + tools.encode_params(args)
 
         headers = {
@@ -85,7 +84,7 @@ class GithubApi(base.ApiBase):
         args = {
             'access_token':self.token,
         }
-        notis = GithubApi.github_api_call(conn, "notifications", args)
+        notis = self._api_call(conn, "notifications", args)
 
         result = {}
 
