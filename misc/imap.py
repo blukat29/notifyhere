@@ -1,20 +1,22 @@
 import imaplib
+import re
 
 m = imaplib.IMAP4_SSL("imap.gmail.com")
 m.login("you@example.com","Pa55w0rd")
 
-ret, l = m.list()
-print ret
-for a in l:
-    print a
+ret, res = m.list()
+boxes = []
+for line in res:
+    attr, root, name = re.search(r'\((.+)\) "(.+)" "(.+)"', line).groups()
+    if "Noselect" in attr:
+        continue
+    boxes.append((name, name.replace("&","+").decode("utf-7")))
 
-m.select("shopping")
-#ret, u = m.search(None, "UnSeen")
-ret, u = m.uid('search', None, "UnSeen")
-print ret
-u = u[0]
-i = u[0]
-print i
-ret, b = m.fetch(i, "(BODY[HEADER.FIELDS (SUBJECT FROM)])")
-print b
+for box in boxes:
+    raw, decoded = box
+    ret, res = m.select(raw)
+    total = int(res[0])
+    ret, res = m.search(None, "(UNSEEN)")
+    unseen = len(res[0].split())
+    print raw, decoded, total, unseen
 
