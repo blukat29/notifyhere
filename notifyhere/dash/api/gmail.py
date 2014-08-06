@@ -1,11 +1,15 @@
 from httplib import HTTPSConnection
 import json
+import imaplib
+import re
 
 import base
 import tools
 import secrets
 
 class GmailApi(base.ApiBase):
+
+    list_re = re.compile(r'\((.+)\) "(.+)" "(.+)"')
 
     def __init__(self):
         base.ApiBase.__init__(self, "gmail")
@@ -20,7 +24,7 @@ class GmailApi(base.ApiBase):
             "response_type":"code",
             "client_id":secrets.GMAIL_CLIENT_ID,
             "redirect_uri":secrets.BASE_REDIRECT_URL + "gmail",
-            "scope":"https://mail.google.com/auth/gmail.readonly https://www.googleapis.com/auth/userinfo.email",
+            "scope":"https://mail.google.com/ https://www.googleapis.com/auth/userinfo.email",
             "approval_prompt":"force",
         }
         return url + "?" + tools.encode_params(args)
@@ -56,6 +60,37 @@ class GmailApi(base.ApiBase):
         conn.request("GET","/oauth2/v1/tokeninfo?alt=json&access_token="+self.token,"",{})
         resp = conn.getresponse()
         self.username = json.loads(resp.read())['email']
+
+    def update(self):
+        auth = "user=%s\1auth=Bearer %s\1\1" % (self.username, self.token)
+        
+        m = imaplib.IMAP4_SSL("imap.gmail.com")
+        m.authenticate("XOAUTH2", lambda x: auth)
+
+        status, raw_list = m.list()
+        boxes = []
+        for line in raw_list:
+            attr, root, raw_name = GmailApi.list_re.search(line).groups()
+            if "Noselect" in attr:
+                continue
+            decoded_name = raw_name.replace("&","+").decode("utf-7")
+            boxes.append((raw_name, decoded_name))
+
+        noti = {}
+        for box in boxes:
+            raw_name, decoded_name = box
+            
+            status, result = m.select(raw_name)
+            total = int(result[0])
+
+            status, result = m.search(None, "(UNSEEN)")
+            unseen = len(result[0].split())
+            
+            noti[decoded_name] = unseen
+
+        m.close()
+        m.logout()
+        return noti
 
     def logout(self):
         self.is_auth = False
