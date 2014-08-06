@@ -30,6 +30,24 @@ class GithubApi(base.ApiBase):
         }
         return url + "?" + tools.encode_params(args)
 
+    def _api_call(self, conn, job, args):
+        url  = "/" + job + "?" + tools.encode_params(args)
+
+        headers = {
+            'Accept':'application/vnd.github.v3+json',
+            'User-Agent':'Python-2.7.6-httplib'
+        }
+
+        conn = HTTPSConnection("api.github.com")
+        conn.request("GET", url, "", headers)
+        resp = conn.getresponse()
+        if resp.status != 200:
+            return None
+        try:
+            return json.loads(resp.read())
+        except ValueError:
+            return None
+
     def oauth_callback(self, params):
 
         if 'state' not in params:
@@ -61,23 +79,11 @@ class GithubApi(base.ApiBase):
         except (KeyError, ValueError):
             return None
 
-    def _api_call(self, conn, job, args):
-        url  = "/" + job + "?" + tools.encode_params(args)
-
-        headers = {
-            'Accept':'application/vnd.github.v3+json',
-            'User-Agent':'Python-2.7.6-httplib'
+        args = {
+            'access_token':self.token,
         }
-
-        conn = HTTPSConnection("api.github.com")
-        conn.request("GET", url, "", headers)
-        resp = conn.getresponse()
-        if resp.status != 200:
-            return None
-        try:
-            return json.loads(resp.read())
-        except ValueError:
-            return None
+        user = self._api_call(conn, "user", args)
+        self.username = user['login']
 
     def update(self):
         conn = HTTPSConnection("api.github.com")
