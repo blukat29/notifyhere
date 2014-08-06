@@ -15,7 +15,7 @@
   {% for service in services %}
     <div class="col-sm-4 service">
       <div class="row row-header">
-        <div class="col-sm-1 col-header"><img src="{{ service.icon }}"/></div>
+        <div class="col-sm-1 col-header"><img src="{{ service.icon_url }}"/></div>
         <div class="col-sm-3 col-header"><h4>{{ service.name }}</h4></div>
         {% if service.is_auth %}
         <div class="col-sm-6 col-header"><h6>{{ service.username }}</h6></div>

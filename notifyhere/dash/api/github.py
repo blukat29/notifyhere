@@ -9,13 +9,15 @@ import secrets
 
 class GithubApi(base.ApiBase):
 
+    FAVICON_URL = "http://github.com/favicon.ico"
+
     def __init__(self):
-        self.is_auth = False
-        self.name = "github"
+        base.ApiBase.__init__(self, "github")
         self.state = ""
         self.token = ""
-        self.icon = "http://github.com/favicon.ico"
-        self.username = ""
+
+    def icon_url(self):
+        return GithubApi.FAVICON_URL
 
     def oauth_link(self):
         self.state = str(int(time.time()))
@@ -27,6 +29,24 @@ class GithubApi(base.ApiBase):
             "state":self.state,
         }
         return url + "?" + tools.encode_params(args)
+
+    def _api_call(self, conn, job, args):
+        url  = "/" + job + "?" + tools.encode_params(args)
+
+        headers = {
+            'Accept':'application/vnd.github.v3+json',
+            'User-Agent':'Python-2.7.6-httplib'
+        }
+
+        conn = HTTPSConnection("api.github.com")
+        conn.request("GET", url, "", headers)
+        resp = conn.getresponse()
+        if resp.status != 200:
+            return None
+        try:
+            return json.loads(resp.read())
+        except ValueError:
+            return None
 
     def oauth_callback(self, params):
 
@@ -59,31 +79,18 @@ class GithubApi(base.ApiBase):
         except (KeyError, ValueError):
             return None
 
-    @staticmethod
-    def github_api_call(conn, job, args):
-        url  = "/" + job + "?" + tools.encode_params(args)
-
-        headers = {
-            'Accept':'application/vnd.github.v3+json',
-            'User-Agent':'Python-2.7.6-httplib'
+        args = {
+            'access_token':self.token,
         }
-
-        conn = HTTPSConnection("api.github.com")
-        conn.request("GET", url, "", headers)
-        resp = conn.getresponse()
-        if resp.status != 200:
-            return None
-        try:
-            return json.loads(resp.read())
-        except ValueError:
-            return None
+        user = self._api_call(conn, "user", args)
+        self.username = user['login']
 
     def update(self):
         conn = HTTPSConnection("api.github.com")
         args = {
             'access_token':self.token,
         }
-        notis = GithubApi.github_api_call(conn, "notifications", args)
+        notis = self._api_call(conn, "notifications", args)
 
         result = {}
 
@@ -97,20 +104,6 @@ class GithubApi(base.ApiBase):
     def logout(self):
         self.is_auth = False
         self.token = ""
-
-    def pack(self):
-        return {
-            'is_auth':self.is_auth,
-            'name':self.name,
-            'state':self.state,
-            'token':self.token,
-        }
-
-    def unpack(self, data):
-        if data:
-            self.is_auth = data.get('is_auth',False)
-            self.state = data.get('state',"")
-            self.token = data.get('token',"")
 
     def __str__(self):
         return json.dumps(self.pack())

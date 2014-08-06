@@ -8,14 +8,16 @@ import tools
 import secrets
 
 class SlackApi(base.ApiBase):
+    
+    FAVICON_URL = "https://slack.com/favicon.ico"
 
     def __init__(self):
-        self.is_auth = False
-        self.name = "slack"
+        base.ApiBase.__init__(self, "slack")
         self.state = ""
         self.token = ""
-        self.icon = "https://slack.com/favicon.ico"
-        self.username = ""
+
+    def icon_url(self):
+        return SlackApi.FAVICON_URL
 
     def oauth_link(self):
         self.state = str(int(time.time()))
@@ -28,8 +30,7 @@ class SlackApi(base.ApiBase):
         }
         return url + "?" + tools.encode_params(args)
 
-    @staticmethod
-    def slack_api_call(conn, job, args):
+    def _api_call(self, conn, job, args):
         url = "/api/" + job + "?" + tools.encode_params(args)
         conn.request("GET", url, "", {})
         resp = conn.getresponse()
@@ -58,7 +59,7 @@ class SlackApi(base.ApiBase):
             'code':params['code'],
             'redirect_uri':secrets.BASE_REDIRECT_URL + "slack",
         }
-        result = SlackApi.slack_api_call(conn, "oauth.access", args)
+        result = self._api_call(conn, "oauth.access", args)
 
         if not result:
             return None
@@ -71,7 +72,7 @@ class SlackApi(base.ApiBase):
         args = {
             'token':self.token,
         }
-        result = SlackApi.slack_api_call(conn, "auth.test", args)
+        result = self._api_call(conn, "auth.test", args)
         self.username = result['team'] + " " + result['user']
 
         conn.close()
@@ -83,7 +84,7 @@ class SlackApi(base.ApiBase):
         args = {
             'token':self.token,
         }
-        channels = SlackApi.slack_api_call(conn, "channels.list", args)
+        channels = self._api_call(conn, "channels.list", args)
 
         result = {}
 
@@ -93,7 +94,7 @@ class SlackApi(base.ApiBase):
                     'token':self.token,
                     'channel':channel['id'],
                 }
-                info = SlackApi.slack_api_call(conn, "channels.info", args)
+                info = self._api_call(conn, "channels.info", args)
 
                 name = '#' + channel['name']
                 unread_count = info['channel']['unread_count']
@@ -104,22 +105,6 @@ class SlackApi(base.ApiBase):
     def logout(self):
         self.is_auth = False
         self.token = ""
-
-    def pack(self):
-        return {
-            'is_auth':self.is_auth,
-            'name':self.name,
-            'state':self.state,
-            'token':self.token,
-            'username':self.username,
-        }
-
-    def unpack(self, data):
-        if data:
-            self.is_auth = data.get('is_auth',False)
-            self.state = data.get('state',"")
-            self.token = data.get('token',"")
-            self.username = data.get('username',"")
 
     def __str__(self):
         return json.dumps(self.pack())
