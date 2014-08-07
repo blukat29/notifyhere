@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  {% if success %}
+  <p>Thanks! successfully logged in to {{ service }}.</p>
+  {% else %}
+  <p>Ouch! login to {{ service }} failed.</p>
+  {% endif %}
+
+  <span id="timer"></span>
+  <script>
+    var count=5;
+    var counter = setInterval(timer, 1000);
+    function timer() {
+      count = count - 1;
+      if (count <= 0) {
+        clearInterval(counter);
+        window.opener.location.reload();
+        window.close();
+      }
+      document.getElementById("timer").innerHTML = count+" secs.";
+    }
+  </script>
+</body>
+</html>

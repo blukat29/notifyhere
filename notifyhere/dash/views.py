@@ -26,9 +26,10 @@ def auth_callback(request, service=None):
         agent.unpack(request.session[service])
         agent.oauth_callback(request.GET)
         request.session[service] = agent.pack()
+        success = True
     else:
-        return HttpResponse("ouch!")
-    return redirect('/dash')
+        success = False
+    return render(request, 'dash/callback.html', {'service':service, 'success':success})
 
 def auth_logout(request, service=None):
     agent = getApi(service)
