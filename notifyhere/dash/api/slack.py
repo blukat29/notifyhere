@@ -98,7 +98,8 @@ class SlackApi(base.ApiBase):
 
                 name = '#' + channel['name']
                 unread_count = info['channel']['unread_count']
-                result[name] = unread_count
+                if unread_count > 0:
+                    result[name] = unread_count
 
         return result
 
