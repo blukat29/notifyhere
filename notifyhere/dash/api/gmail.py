@@ -85,8 +85,8 @@ class GmailApi(base.ApiBase):
 
             status, result = m.search(None, "(UNSEEN)")
             unseen = len(result[0].split())
-            
-            noti[decoded_name] = unseen
+            if unseen > 0:
+                noti[decoded_name] = unseen
 
         m.close()
         m.logout()
