@@ -29,9 +29,10 @@ def get_nonce(): return "ea9ec8429b68d6b77cd5600adbbb0456"
 
 def escape(s): return quote(s, '')
 
-def sign_request(secret, method, url, params):
+def sign_request(secret, method, url, params, token_secret=None):
     # Secret key for signing.
     key = secret + '&'
+    if token_secret: key += token_secret
 
     # Preprocess params.
     params = [k+'='+params[k] for k in sorted(params)]
@@ -116,7 +117,31 @@ conn.request("POST", "/oauth/access_token", "", {"Authorization":"OAuth " + head
 resp = conn.getresponse()
 
 print resp.status, resp.reason
-print resp.read()
+d = resp.read()
+print d
+d = dict(parse_qsl(d))
+access_token = d['oauth_token']
+access_token_secret = d['oauth_token_secret']
+username = d['screen_name']
 
+### Finished: try an API call!
+### Uses ACCESS_TOKEN to have access to an API call.
 
+auth = {
+    "oauth_consumer_key":CONSUMER_KEY,
+    "oauth_nonce":get_nonce(),
+    "oauth_signature_method":"HMAC-SHA1",
+    "oauth_timestamp":get_timestamp(),
+    "oauth_token":access_token,
+    "oauth_version":"1.0",
+}
+
+sign = sign_request(CONSUMER_SECRET, "GET", ACCESS_TOKEN_URL, auth, token_secret=access_token_secret)
+auth['oauth_signature'] = escape(sign)
+
+header = [k+'="'+v+'"' for k,v in auth.iteritems()]
+header = ','.join(header)
+
+conn.request("GET","/1.1/statuses/home_timeline.json","",{"Authorization":"OAuth "+header})
+print conn.getresponse().read()
 
