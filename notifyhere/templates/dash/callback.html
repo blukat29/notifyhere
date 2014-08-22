@@ -13,11 +13,11 @@
   <script>
     var count=5;
     var counter = setInterval(timer, 1000);
+        window.opener.location.reload();
     function timer() {
       count = count - 1;
       if (count <= 0) {
         clearInterval(counter);
-        window.opener.location.reload();
         window.close();
       }
       document.getElementById("timer").innerHTML = count+" secs.";
