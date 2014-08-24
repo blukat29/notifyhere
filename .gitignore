@@ -13,3 +13,5 @@ venv/*
 django.ini
 uwsgi_params
 
+tags
+
