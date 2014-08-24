@@ -29,9 +29,26 @@ def get_nonce(): return "ea9ec8429b68d6b77cd5600adbbb0456"
 
 def escape(s): return quote(s, '')
 
-def sign_request(secret, method, url, params, token_secret=None):
+def sign_request(consumer_secret,
+                 token_secret,
+                 method,
+                 url,
+                 auth):
+    sign = calculate_sign(consumer_secret, token_secret, method, url, auth)
+    auth['oauth_signature'] = escape(sign)
+
+    header = [k+'="'+v+'"' for k,v in auth.iteritems()]
+    header = ','.join(header)
+
+    return "OAuth " + header
+
+def calculate_sign(consumer_secret,
+                   token_secret,
+                   method,
+                   url,
+                   params):
     # Secret key for signing.
-    key = secret + '&'
+    key = consumer_secret + '&'
     if token_secret: key += token_secret
 
     # Preprocess params.
@@ -58,19 +75,15 @@ auth = {
     "oauth_version":"1.0",
 }
 
-sign = sign_request(CONSUMER_SECRET, "POST", REQUEST_TOKEN_URL, auth)
-auth['oauth_signature'] = escape(sign)
-
-header = [k+'="'+v+'"' for k,v in auth.iteritems()]
-header = ','.join(header)
+header = sign_request(CONSUMER_SECRET, None, "POST", REQUEST_TOKEN_URL, auth)
 
 print "\n[1-1] Request Sent:"
 print "POST /oauth/request_token HTTP/1.1"
 print "Host: api.twitter.com"
-print "Authorization: OAuth " + header
+print "Authorization: " + header
 
 conn = HTTPSConnection("api.twitter.com")
-conn.request("POST", "/oauth/request_token", "", {"Authorization":"OAuth " + header})
+conn.request("POST", "/oauth/request_token", "", {"Authorization":header})
 resp = conn.getresponse()
 
 request_dict = dict(parse_qsl(resp.read()))
@@ -87,7 +100,8 @@ pprint(request_dict)
 print "\n[2-1] Use your browser to go to this location."
 print "https://api.twitter.com/oauth/authorize?oauth_token=" + request_token
 
-verifier = raw_input("\nEnter the 'oauth_verifier' you received: ")
+print "\n[2-2] Receive oauth verifier passed to the callback."
+verifier = raw_input("Enter the 'oauth_verifier' you received: ")
 
 ### STAGE 3. Convert to Access Token.
 ### Uses REQUEST_TOKEN, OAUTH_VERIFIER to get an ACCESS_TOKEN.
@@ -102,24 +116,20 @@ auth = {
     "oauth_signature_method":"HMAC-SHA1"
 }
 
-sign = sign_request(CONSUMER_SECRET, "GET", ACCESS_TOKEN_URL, auth)
-auth['oauth_signature'] = escape(sign)
+header = sign_request(CONSUMER_SECRET,"", "GET", ACCESS_TOKEN_URL, auth)
 
-header = [k+'="'+v+'"' for k,v in auth.iteritems()]
-header = ','.join(header)
-
-print "\n[1-1] Request Sent:"
+print "\n[3-1] Request Sent:"
 print "POST /oauth/access_token HTTP/1.1"
 print "Host: api.twitter.com"
-print "Authorization: OAuth " + header
+print "Authorization: " + header
 
-conn.request("POST", "/oauth/access_token", "", {"Authorization":"OAuth " + header})
+conn.request("POST", "/oauth/access_token", "", {"Authorization":header})
 resp = conn.getresponse()
 
+d = dict(parse_qsl(resp.read()))
+print "\n[3-2] Response Got:"
 print resp.status, resp.reason
-d = resp.read()
-print d
-d = dict(parse_qsl(d))
+pprint(d)
 access_token = d['oauth_token']
 access_token_secret = d['oauth_token_secret']
 username = d['screen_name']
@@ -136,12 +146,9 @@ auth = {
     "oauth_version":"1.0",
 }
 
-sign = sign_request(CONSUMER_SECRET, "GET", ACCESS_TOKEN_URL, auth, token_secret=access_token_secret)
-auth['oauth_signature'] = escape(sign)
+header = sign_request(CONSUMER_SECRET, access_token_secret, "GET", ACCESS_TOKEN_URL, auth)
 
-header = [k+'="'+v+'"' for k,v in auth.iteritems()]
-header = ','.join(header)
-
-conn.request("GET","/1.1/statuses/home_timeline.json","",{"Authorization":"OAuth "+header})
+conn.request("GET","/1.1/statuses/home_timeline.json","",{"Authorization":header})
+print "\n[4] Try an API call."
 print conn.getresponse().read()
 
