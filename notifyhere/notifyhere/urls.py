@@ -8,5 +8,4 @@ urlpatterns = patterns('',
     # url(r'^$', 'notifyhere.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^dash/', include('dash.urls')),
-    url(r'^admin/', include(admin.site.urls)),
 )
